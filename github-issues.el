@@ -114,9 +114,7 @@
       (with-current-buffer (github-issues-buffer user repo)
         (if (boundp 'github-current-user)
             (github-switch-to-buffer (current-buffer))
-          (github-issues-refresh user repo)
-          (setq github-current-user user)
-          (setq github-current-repo repo)))))
+          (github-issues-refresh user repo)))))
 
 (defun github-switch-to-buffer (buffer)
   (let ((window (get-buffer-window buffer)))
@@ -132,7 +130,9 @@
   (if (not repo)
     (setq repo github-current-repo))
   (github-issues-populate (github-issues-buffer user repo)
-                          (github-api-repository-issues user repo)))
+                          (github-api-repository-issues user repo))
+  (setq github-current-user user)
+  (setq github-current-repo repo))
 
 (defvar github-issues-mode-map
   (let ((map (make-keymap)))
