@@ -114,13 +114,30 @@
       (with-current-buffer (github-issues-buffer user repo)
         (if (boundp 'github-current-user)
             (switch-to-buffer-other-window (current-buffer))
-          (github-issues-populate (current-buffer)
-                                  (github-api-repository-issues user repo))
+          (github-issues-refresh user repo)
           (setq github-current-user user)
           (setq github-current-repo repo)))))
 
+(defun github-issues-refresh (&optional user repo)
+  "Refresh."
+  (interactive)
+  (if (not user)
+    (setq user github-current-user))
+  (if (not repo)
+    (setq repo github-current-repo))
+  (github-issues-populate (github-issues-buffer user repo)
+                          (github-api-repository-issues user repo)))
+
+(defvar github-issues-mode-map
+  (let ((map (make-keymap)))
+    (define-key map "\C-cr" 'github-issues-refresh)
+    map)
+  "Keymap for GitHub Issues major mode.")
+
 (define-derived-mode github-issues-mode tabulated-list-mode "GitHub Issues"
-  "Major mode for browsing a list of issues in a GitHub project."
+  "Major mode for browsing a list of issues in a GitHub project.
+
+\\{github-issues-mode-map}"
   (setq tabulated-list-format [("Issue" 5 github-issue-sort-by-issue)
                                ("Title" 60 github-issue-sort-by-title)])
   (setq tabulated-list-padding 2)
