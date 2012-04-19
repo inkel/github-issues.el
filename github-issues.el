@@ -63,16 +63,30 @@
   (let ((url (format "https://api.github.com/repos/%s/%s/issues" user repo)))
     (github-parse-response (url-retrieve-synchronously url))))
 
+(defun github-api-repository-issue (user repo number)
+  "Return an issue data in `plist` format."
+  (let ((url (format "https://api.github.com/repos/%s/%s/issues/%s" user repo number)))
+    (github-parse-response (url-retrieve-synchronously url))))
+
 (defun github-issues-buffer (user repo)
   "Creates or return the buffer for the given user and repository."
   (get-buffer-create (format "*GitHub Issues: %s/%s*" user repo)))
 
-;;; TODO: I'm not convinced at all of this function
+(defun github-issue-buffer (user repo number)
+  "Creates or return the buffer for the given user, repository and number."
+  (get-buffer-create (format "*GitHub Issue: #%s on %s/%s*" number user repo)))
+
 (defun github-issue-entry-show (&optional button)
-  (let ((user (car github-username-history))
-        (repo (car github-repository-history))
-        (number (cdr (tabulated-list-get-id))))
-    (message "Not implemented")))
+  (if button
+      (let* ((issue (button-get button 'issue))
+             (user github-current-user)
+             (repo github-current-repo)
+             (buffer (github-issue-buffer user repo (plist-get issue :number))))
+        (github-issue-populate buffer issue)
+        (with-current-buffer buffer
+          (setq github-current-user user)
+          (setq github-current-repo repo)
+          (setq github-current-issue issue)))))
 
 (defun github-tabulated-issue (issue)
   "Formats an issue data to populate the issue list."
@@ -82,7 +96,7 @@
           (vector (list (pget :number)
                         'font-lock-builtin-face 'link
                         'follow-link t
-                        'url (plist-get (pget :user) :url)
+                        'issue issue
                         'action 'github-issue-entry-show)
                   (propertize (pget :title) 'font-lock-face 'default)))))
 
@@ -103,6 +117,12 @@
     (setq tabulated-list-entries
           (mapcar 'github-tabulated-issue issues-plist))
     (tabulated-list-print nil)
+    (github-switch-to-buffer buffer)))
+
+(defun github-issue-populate (buffer issue)
+  "Populates the given buffer with issue data. See `github-api-issue`."
+  (with-current-buffer buffer
+    (github-issue-mode)
     (github-switch-to-buffer buffer)))
 
 (defun github-issues (user repo)
@@ -134,6 +154,21 @@
   (setq github-current-user user)
   (setq github-current-repo repo))
 
+(defun github-issue-refresh (&optional user repo number)
+  "Refresh GitHub issue data."
+  (interactive)
+  (if (not user)
+      (setq user github-current-user))
+  (if (not repo)
+      (setq repo github-current-repo))
+  (if (not number)
+      (setq number (plist-get github-current-issue :number)))
+  (github-issue-populate (github-issue-buffer user repo number)
+                         (github-api-repository-issue user repo number))
+  (setq github-current-user user)
+  (setq github-current-repo repo)
+  (setq github-current-issue github-current-issue))
+
 (defvar github-issues-mode-map
   (let ((map (make-keymap)))
     (define-key map "\C-cr" 'github-issues-refresh)
@@ -152,8 +187,19 @@
   (make-local-variable 'github-current-repo)
   (tabulated-list-init-header))
 
+(defvar github-issue-mode-map
+  (let ((map (make-keymap)))
+    (define-key map "\C-cr" 'github-issue-refresh)
+    map)
+  "Keymap for GitHub Issue major mode.")
+
 (define-derived-mode github-issue-mode font-lock-mode "GitHub Issue"
-  "Major mode for display a GitHub issue data."
+  "Major mode for display a GitHub issue data.
+
+\\{github-issue-mode-map}"
+  (make-local-variable 'github-current-user)
+  (make-local-variable 'github-current-repo)
+  (make-local-variable 'github-current-issue)
   (toggle-read-only t))
 
 (provide 'github-issues)
