@@ -111,8 +111,11 @@
    (list (read-string "GitHub username: " nil 'github-username-history t)
          (read-string "Repository: " nil 'github-repository-history t)))
   (if (and user repo)
-      (github-issues-populate (github-issues-buffer user repo)
-                              (github-api-repository-issues user repo))))
+      (with-current-buffer (github-issues-buffer user repo)
+        (github-issues-populate (current-buffer)
+                                (github-api-repository-issues user repo))
+        (setq github-current-user user)
+        (setq github-current-repo repo))))
 
 (define-derived-mode github-issues-mode tabulated-list-mode "GitHub Issues"
   "Major mode for browsing a list of issues in a GitHub project."
@@ -120,6 +123,8 @@
                                ("Title" 60 github-issue-sort-by-title)])
   (setq tabulated-list-padding 2)
   (setq tabulated-list-sort-key (cons "Issue" nil))
+  (make-local-variable 'github-current-user)
+  (make-local-variable 'github-current-repo)
   (tabulated-list-init-header))
 
 (define-derived-mode github-issue-mode font-lock-mode "GitHub Issue"
