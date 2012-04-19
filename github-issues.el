@@ -112,10 +112,12 @@
          (read-string "Repository: " nil 'github-repository-history t)))
   (if (and user repo)
       (with-current-buffer (github-issues-buffer user repo)
-        (github-issues-populate (current-buffer)
-                                (github-api-repository-issues user repo))
-        (setq github-current-user user)
-        (setq github-current-repo repo))))
+        (if (boundp 'github-current-user)
+            (switch-to-buffer-other-window (current-buffer))
+          (github-issues-populate (current-buffer)
+                                  (github-api-repository-issues user repo))
+          (setq github-current-user user)
+          (setq github-current-repo repo)))))
 
 (define-derived-mode github-issues-mode tabulated-list-mode "GitHub Issues"
   "Major mode for browsing a list of issues in a GitHub project."
