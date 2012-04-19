@@ -28,7 +28,7 @@ Interactive function that opens a new `github-issue-mode` buffer with the given 
 
 Creates or return the buffer for the given user and repository.
 
-### `github-issue-buffer (user repo number)` **NOT IMPLEMENTED**
+### `github-issue-buffer (user repo number)`
 
 Creates or return the buffer for the given issue.
 
@@ -40,7 +40,7 @@ Parses the JSON response from a GitHub API call.
 
 Returns a list of issues in `plist` format.
 
-### `github-api-issue (user repo number)` **NOT IMPLEMENTED**
+### `github-api-repository-issue (user repo number)`
 
 Return an issue data in `plist` format.
 
@@ -48,9 +48,9 @@ Return an issue data in `plist` format.
 
 Populates the given buffer with a list of issues. See `github-api-repository-issues`.
 
-### `github-issue-populate (buffer issue)` **NOT IMPLEMENTED**
+### `github-issue-populate (buffer issue)`
 
-Populates the given buffer with an issue description. See `github-api-issues`.
+Populates the given buffer with an issue description. See `github-api-repository-issue`.
 
 ## Modes
 
@@ -60,14 +60,15 @@ Major mode derived from `tabulated-list-mode`, to display a list of issues.
 
 In this mode the following keymap is active:
 
-* `C-c r`: refresh the list of issues by calling `github-issues-refresh (user repo)`.
+* `C-c r`: refresh the list of issues.
 
-### `github-issue-mode` **NOT IMPLEMENTED**
+### `github-issue-mode`
 
 Major mode derived from `font-lock-mode` to display a given issue data.
 
 In this mode the following keymap is active:
 
+* `C-c r`: refresh the issue data.
 * `C-c o`: open the issue in a browser.
 * `C-c a`: open the issue author page in a browser.
 

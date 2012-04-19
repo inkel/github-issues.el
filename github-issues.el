@@ -120,7 +120,7 @@
     (github-switch-to-buffer buffer)))
 
 (defun github-issue-populate (buffer issue)
-  "Populates the given buffer with issue data. See `github-api-issue`."
+  "Populates the given buffer with issue data. See `github-api-repository-issue`."
   (with-current-buffer buffer
     (github-issue-mode)
     (github-switch-to-buffer buffer)))
@@ -143,7 +143,7 @@
       (switch-to-buffer-other-window buffer))))
 
 (defun github-issues-refresh (&optional user repo)
-  "Refresh."
+  "Refresh GitHub issues list."
   (interactive)
   (if (not user)
     (setq user github-current-user))
