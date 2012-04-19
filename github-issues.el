@@ -169,6 +169,21 @@
   (setq github-current-repo repo)
   (setq github-current-issue github-current-issue))
 
+(defun github-issue-browse ()
+  "Open the current issue in a web browser."
+  (interactive)
+  (if (boundp 'github-current-issue)
+      (browse-url (plist-get github-current-issue :html_url))
+    (message "No current issue selected")))
+
+(defun github-issue-browse-author ()
+  "Open the current issue's author profile in a web browser."
+  (interactive)
+  (if (boundp 'github-current-issue)
+      (browse-url (format "https://github.com/%s"
+                          (plist-get (plist-get github-current-issue :user) :login)))
+    (message "No current issue selected")))
+
 (defvar github-issues-mode-map
   (let ((map (make-keymap)))
     (define-key map "\C-cr" 'github-issues-refresh)
@@ -190,6 +205,8 @@
 (defvar github-issue-mode-map
   (let ((map (make-keymap)))
     (define-key map "\C-cr" 'github-issue-refresh)
+    (define-key map "\C-co" 'github-issue-browse)
+    (define-key map "\C-ca" 'github-issue-browse-author)
     map)
   "Keymap for GitHub Issue major mode.")
 
