@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Github-issues.el by inkel</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Github-issues.el</h1>
+        <p>github-issues.el --- Emacs utility functions and modes for managing GitHub projects' issues</p>
+        <p class="view"><a href="https://github.com/inkel/github-issues.el">View the Project on GitHub <small>inkel/github-issues.el</small></a></p>
+        <ul>
+          <li><a href="https://github.com/inkel/github-issues.el/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/inkel/github-issues.el/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/inkel/github-issues.el">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>github-issues.el</h1>
+
+<p>An <a href="http://www.gnu.org/software/emacs/">Emacs</a> mode for managing project's issues on <a href="https://github.com/">GitHub</a>.</p>
+
+<p>The final goal for using <code>github-issues.el</code> is to list, show, add, edit, remove, comment and assign issues on GitHub hosted projects without leaving Emacs.</p>
+
+<h2>Dependencies</h2>
+
+<p>I've tried to keep the dependencies to a minimum. Current dependencies are:</p>
+
+<ul>
+<li><code>tabulated-list</code></li>
+<li><code>url</code></li>
+<li><code>font-lock</code></li>
+</ul><h2>Functions</h2>
+
+<h3><code>github-issues (user repo)</code></h3>
+
+<p>Opens a <code>github-issues-mode</code> buffer listing the issues for the given user and repository.</p>
+
+<h3>
+<code>github-issue (user repo number)</code> <strong>NOT IMPLEMENTED</strong>
+</h3>
+
+<p>Interactive function that opens a new <code>github-issue-mode</code> buffer with the given issue description.</p>
+
+<h2>Non-interactive functions</h2>
+
+<h3><code>github-issues-buffer (user repo)</code></h3>
+
+<p>Creates or return the buffer for the given user and repository.</p>
+
+<h3><code>github-issue-buffer (user repo number)</code></h3>
+
+<p>Creates or return the buffer for the given issue.</p>
+
+<h3><code>github-parse-response</code></h3>
+
+<p>Parses the JSON response from a GitHub API call.</p>
+
+<h3><code>github-api-repository-issues (user repo)</code></h3>
+
+<p>Returns a list of issues in <code>plist</code> format.</p>
+
+<h3><code>github-api-repository-issue (user repo number)</code></h3>
+
+<p>Return an issue data in <code>plist</code> format.</p>
+
+<h3><code>github-issues-populate (buffer issues)</code></h3>
+
+<p>Populates the given buffer with a list of issues. See <code>github-api-repository-issues</code>.</p>
+
+<h3><code>github-issue-populate (buffer issue)</code></h3>
+
+<p>Populates the given buffer with an issue description. See <code>github-api-repository-issue</code>.</p>
+
+<h2>Modes</h2>
+
+<h3><code>github-issues-mode</code></h3>
+
+<p>Major mode derived from <code>tabulated-list-mode</code>, to display a list of issues.</p>
+
+<p>In this mode the following keymap is active:</p>
+
+<ul>
+<li>
+<code>C-c r</code>: refresh the list of issues.</li>
+</ul><h3><code>github-issue-mode</code></h3>
+
+<p>Major mode derived from <code>font-lock-mode</code> to display a given issue data.</p>
+
+<p>In this mode the following keymap is active:</p>
+
+<ul>
+<li>
+<code>C-c r</code>: refresh the issue data.</li>
+<li>
+<code>C-c o</code>: open the issue in a browser.</li>
+<li>
+<code>C-c a</code>: open the issue author page in a browser.</li>
+</ul><h2>TODO</h2>
+
+<ul>
+<li>Cache results and add refresh functions.</li>
+<li>Improve descriptions.</li>
+<li>Add keymaps.</li>
+<li>Improve issue information.</li>
+<li>Add GitHub's authentication for issue management.</li>
+<li>Add issues pagination.</li>
+<li>Add customization options.</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/inkel">inkel</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
