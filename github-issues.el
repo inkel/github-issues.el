@@ -103,7 +103,7 @@
     (setq tabulated-list-entries
           (mapcar 'github-tabulated-issue issues-plist))
     (tabulated-list-print nil)
-    (switch-to-buffer-other-window buffer)))
+    (github-switch-to-buffer buffer)))
 
 (defun github-issues (user repo)
   "Display a list of issues list for a GitHub repository."
@@ -113,10 +113,16 @@
   (if (and user repo)
       (with-current-buffer (github-issues-buffer user repo)
         (if (boundp 'github-current-user)
-            (switch-to-buffer-other-window (current-buffer))
+            (github-switch-to-buffer (current-buffer))
           (github-issues-refresh user repo)
           (setq github-current-user user)
           (setq github-current-repo repo)))))
+
+(defun github-switch-to-buffer (buffer)
+  (let ((window (get-buffer-window buffer)))
+    (if window
+        (select-window window)
+      (switch-to-buffer-other-window buffer))))
 
 (defun github-issues-refresh (&optional user repo)
   "Refresh."
