@@ -81,3 +81,5 @@ In this mode the following keymap is active:
 * Add GitHub's authentication for issue management.
 * Add issues pagination.
 * Add customization options.
+* Add comments on issues buffers.
+* Allow comments on issues.
