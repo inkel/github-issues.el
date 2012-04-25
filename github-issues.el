@@ -119,11 +119,42 @@
     (tabulated-list-print nil)
     (github-switch-to-buffer buffer)))
 
+(defun github-issue-colorize-label (label)
+  (let ((color (format "#%s" (plist-get label :color))))
+    (propertize (plist-get label :name)
+                'font-lock-face (list :foreground color))))
+
 (defun github-issue-populate (buffer issue)
   "Populates the given buffer with issue data. See `github-api-repository-issue`."
-  (with-current-buffer buffer
-    (github-issue-mode)
-    (github-switch-to-buffer buffer)))
+  (flet ((pget (key) (plist-get issue key)))
+    (with-current-buffer buffer
+      (toggle-read-only -1)
+      (erase-buffer)
+      (insert "#")
+      (insert-text-button (number-to-string (pget :number))
+                          'font-lock-builtin-face 'link
+                          'follow-link t
+                          'url (pget :html_url)
+                          'action 'github--browse-url)
+      (insert ": " (pget :title) "\n")
+      (insert "created on " (pget :created_at) " by ")
+      (insert-text-button (plist-get (pget :user) :login)
+                          'font-lock-builtin-face 'link
+                          'follow-link t
+                          'url (plist-get (pget :user) :html_url)
+                          'action 'github--browse-url)
+      (insert "\n")
+      (if (> (length (pget :labels)) 0)
+          (progn
+            (insert "Labels: ")
+            (dolist (label (mapcar 'github-issue-colorize-label (pget :labels)))
+              (insert "[" label "]"))
+            (insert "\n")))
+      (let ((beg (point)))
+        (insert "\n" (pget :body))
+        (replace-string "" "" nil beg (point)))
+      (github-issue-mode)
+      (github-switch-to-buffer buffer))))
 
 (defun github-issues (user repo)
   "Display a list of issues list for a GitHub repository."
