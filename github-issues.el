@@ -46,6 +46,10 @@
 (require 'url)
 (require 'font-lock)
 
+(defvar github-current-user)
+(defvar github-current-repo)
+(defvar github-current-issue)
+
 (defun github-parse-response (buffer)
   "Parses the JSON response from a GitHub API call."
   (let ((json-object-type 'plist))
