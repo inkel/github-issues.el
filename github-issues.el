@@ -251,3 +251,4 @@
   (toggle-read-only t))
 
 (provide 'github-issues)
+;;; github-issues.el ends here
