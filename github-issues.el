@@ -156,6 +156,7 @@
       (github-issue-mode)
       (github-switch-to-buffer buffer))))
 
+;;;###autoload
 (defun github-issues (user repo)
   "Display a list of issues list for a GitHub repository."
   (interactive
