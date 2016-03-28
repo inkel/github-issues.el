@@ -1,4 +1,4 @@
-;;; github-issues.el --- Emacs utility functions and modes for managing GitHub projects' issues
+;;; github-issues.el --- Functions and modes for managing GitHub projects' issues
 
 ;; Copyright (C) 2012 Leandro M. López (inkel) <inkel.ar@gmail.com>
 
