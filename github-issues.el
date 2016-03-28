@@ -55,7 +55,7 @@
 (require 'url-http)
 (eval-when-compile (require 'cl)) ; for flet
 
-(defun github-parse-response (buffer)
+(defun github-issues-parse-response (buffer)
   "Parses the JSON response from a GitHub API call."
   (let ((json-object-type 'plist))
     (unwind-protect
@@ -67,28 +67,28 @@
             (json-read)))
       (kill-buffer buffer))))
 
-(defvar github-current-user nil
+(defvar github-issues-current-user nil
   "Current github user.")
-(make-variable-buffer-local 'github-current-user)
+(make-variable-buffer-local 'github-issues-current-user)
 
-(defvar github-current-repo nil
+(defvar github-issues-current-repo nil
   "Current github repo.")
-(make-variable-buffer-local 'github-current-repo)
+(make-variable-buffer-local 'github-issues-current-repo)
 
-(defvar github-current-issue nil
+(defvar github-issues-current-issue nil
   "Current github issue.")
-(make-variable-buffer-local 'github-current-issue)
+(make-variable-buffer-local 'github-issues-current-issue)
 
 
 (defun github-api-repository-issues (user repo)
   "Returns a list of issues in `plist` format."
   (let ((url (format "https://api.github.com/repos/%s/%s/issues" user repo)))
-    (github-parse-response (url-retrieve-synchronously url))))
+    (github-issues-parse-response (url-retrieve-synchronously url))))
 
 (defun github-api-repository-issue (user repo number)
   "Return an issue data in `plist` format."
   (let ((url (format "https://api.github.com/repos/%s/%s/issues/%s" user repo number)))
-    (github-parse-response (url-retrieve-synchronously url))))
+    (github-issues-parse-response (url-retrieve-synchronously url))))
 
 (defun github-issues-buffer (user repo)
   "Creates or return the buffer for the given user and repository."
@@ -101,14 +101,14 @@
 (defun github-issue-entry-show (&optional button)
   (if button
       (let* ((issue (button-get button 'issue))
-             (user github-current-user)
-             (repo github-current-repo)
+             (user github-issues-current-user)
+             (repo github-issues-current-repo)
              (buffer (github-issue-buffer user repo (plist-get issue :number))))
         (github-issue-populate buffer issue)
         (with-current-buffer buffer
-          (setq github-current-user user)
-          (setq github-current-repo repo)
-          (setq github-current-issue issue)))))
+          (setq github-issues-current-user user)
+          (setq github-issues-current-repo repo)
+          (setq github-issues-current-issue issue)))))
 
 (defun github-tabulated-issue (issue)
   "Formats an issue data to populate the issue list."
@@ -185,7 +185,7 @@
          (read-string "Repository: " nil 'github-repository-history t)))
   (if (and user repo)
       (with-current-buffer (github-issues-buffer user repo)
-        (if github-current-user
+        (if github-issues-current-user
             (github-switch-to-buffer (current-buffer))
           (github-issues-refresh user repo)))))
 
@@ -198,38 +198,38 @@
 (defun github-issues-refresh (&optional user repo)
   "Refresh GitHub issues list."
   (interactive)
-  (let ((user (or user github-current-user))
-        (repo (or repo github-current-repo)))
+  (let ((user (or user github-issues-current-user))
+        (repo (or repo github-issues-current-repo)))
     (github-issues-populate (github-issues-buffer user repo)
                             (github-api-repository-issues user repo))
-    (setq github-current-user user)
-    (setq github-current-repo repo)))
+    (setq github-issues-current-user user)
+    (setq github-issues-current-repo repo)))
 
 (defun github-issue-refresh (&optional user repo number)
   "Refresh GitHub issue data."
   (interactive)
-  (let ((user (or user github-current-user))
-        (repo (or repo github-current-repo))
-        (number (plist-get github-current-issue :number)))
+  (let ((user (or user github-issues-current-user))
+        (repo (or repo github-issues-current-repo))
+        (number (plist-get github-issues-current-issue :number)))
     (github-issue-populate (github-issue-buffer user repo number)
                            (github-api-repository-issue user repo number))
-    (setq github-current-user user)
-    (setq github-current-repo repo)
-    (setq github-current-issue github-current-issue)))
+    (setq github-issues-current-user user)
+    (setq github-issues-current-repo repo)
+    (setq github-issues-current-issue github-issues-current-issue)))
 
 (defun github-issue-browse ()
   "Open the current issue in a web browser."
   (interactive)
-  (if github-current-issue
-      (browse-url (plist-get github-current-issue :html_url))
+  (if github-issues-current-issue
+      (browse-url (plist-get github-issues-current-issue :html_url))
     (message "No current issue selected")))
 
 (defun github-issue-browse-author ()
   "Open the current issue's author profile in a web browser."
   (interactive)
-  (if github-current-issue
+  (if github-issues-current-issue
       (browse-url (format "https://github.com/%s"
-                          (plist-get (plist-get github-current-issue :user) :login)))
+                          (plist-get (plist-get github-issues-current-issue :user) :login)))
     (message "No current issue selected")))
 
 (defvar github-issues-mode-map
