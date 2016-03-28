@@ -99,16 +99,16 @@
   (get-buffer-create (format "*GitHub Issue: #%s on %s/%s*" number user repo)))
 
 (defun github-issue-entry-show (&optional button)
-  (if button
-      (let* ((issue (button-get button 'issue))
-             (user github-issues-current-user)
-             (repo github-issues-current-repo)
-             (buffer (github-issue-buffer user repo (plist-get issue :number))))
-        (github-issue-populate buffer issue)
-        (with-current-buffer buffer
-          (setq github-issues-current-user user)
-          (setq github-issues-current-repo repo)
-          (setq github-issues-current-issue issue)))))
+  (when button
+    (let* ((issue (button-get button 'issue))
+           (user github-issues-current-user)
+           (repo github-issues-current-repo)
+           (buffer (github-issue-buffer user repo (plist-get issue :number))))
+      (github-issue-populate buffer issue)
+      (with-current-buffer buffer
+        (setq github-issues-current-user user)
+        (setq github-issues-current-repo repo)
+        (setq github-issues-current-issue issue)))))
 
 (defun github-tabulated-issue (issue)
   "Formats an issue data to populate the issue list."
@@ -166,12 +166,11 @@
                           'url (plist-get (pget :user) :html_url)
                           'action 'github--browse-url)
       (insert "\n")
-      (if (> (length (pget :labels)) 0)
-          (progn
-            (insert "Labels: ")
-            (dolist (label (mapcar 'github-issue-colorize-label (pget :labels)))
-              (insert "[" label "]"))
-            (insert "\n")))
+      (when (> (length (pget :labels)) 0)
+        (insert "Labels: ")
+        (dolist (label (mapcar 'github-issue-colorize-label (pget :labels)))
+          (insert "[" label "]"))
+        (insert "\n"))
       (let ((beg (point)))
         (insert "\n" (pget :body))
         (replace-string "" "" nil beg (point)))
@@ -183,11 +182,11 @@
   (interactive
    (list (read-string "GitHub username: " nil 'github-username-history t)
          (read-string "Repository: " nil 'github-repository-history t)))
-  (if (and user repo)
-      (with-current-buffer (github-issues-buffer user repo)
-        (if github-issues-current-user
-            (github-switch-to-buffer (current-buffer))
-          (github-issues-refresh user repo)))))
+  (when (and user repo)
+    (with-current-buffer (github-issues-buffer user repo)
+      (if github-issues-current-user
+          (github-switch-to-buffer (current-buffer))
+        (github-issues-refresh user repo)))))
 
 (defun github-switch-to-buffer (buffer)
   (let ((window (get-buffer-window buffer)))
