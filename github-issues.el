@@ -51,6 +51,9 @@
 (require 'tabulated-list)
 (require 'url)
 (require 'font-lock)
+(require 'json)
+(require 'url-http)
+(eval-when-compile (require 'cl)) ; for flet
 
 (defun github-parse-response (buffer)
   "Parses the JSON response from a GitHub API call."
