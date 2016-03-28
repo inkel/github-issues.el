@@ -225,8 +225,8 @@
     (message "No current issue selected")))
 
 (defvar github-issues-mode-map
-  (let ((map (make-keymap)))
-    (define-key map "\C-cr" 'github-issues-refresh)
+  (let ((map (make-sparse-keymap)))
+    (define-key map "g" 'github-issues-refresh)
     map)
   "Keymap for GitHub Issues major mode.")
 
@@ -243,21 +243,20 @@
   (tabulated-list-init-header))
 
 (defvar github-issue-mode-map
-  (let ((map (make-keymap)))
-    (define-key map "\C-cr" 'github-issue-refresh)
-    (define-key map "\C-co" 'github-issue-browse)
-    (define-key map "\C-ca" 'github-issue-browse-author)
+  (let ((map (make-sparse-keymap)))
+    (define-key map "g" 'github-issue-refresh)
+    (define-key map "b" 'github-issue-browse)
+    (define-key map "a" 'github-issue-browse-author)
     map)
   "Keymap for GitHub Issue major mode.")
 
-(define-derived-mode github-issue-mode font-lock-mode "GitHub Issue"
+(define-derived-mode github-issue-mode special-mode "GitHub Issue"
   "Major mode for display a GitHub issue data.
 
 \\{github-issue-mode-map}"
   (make-local-variable 'github-current-user)
   (make-local-variable 'github-current-repo)
-  (make-local-variable 'github-current-issue)
-  (toggle-read-only t))
+  (make-local-variable 'github-current-issue))
 
 (provide 'github-issues)
 
