@@ -67,6 +67,19 @@
             (json-read)))
       (kill-buffer buffer))))
 
+(defvar github-current-user nil
+  "Current github user.")
+(make-variable-buffer-local 'github-current-user)
+
+(defvar github-current-repo nil
+  "Current github repo.")
+(make-variable-buffer-local 'github-current-repo)
+
+(defvar github-current-issue nil
+  "Current github issue.")
+(make-variable-buffer-local 'github-current-issue)
+
+
 (defun github-api-repository-issues (user repo)
   "Returns a list of issues in `plist` format."
   (let ((url (format "https://api.github.com/repos/%s/%s/issues" user repo)))
@@ -172,7 +185,7 @@
          (read-string "Repository: " nil 'github-repository-history t)))
   (if (and user repo)
       (with-current-buffer (github-issues-buffer user repo)
-        (if (boundp 'github-current-user)
+        (if github-current-user
             (github-switch-to-buffer (current-buffer))
           (github-issues-refresh user repo)))))
 
@@ -207,14 +220,14 @@
 (defun github-issue-browse ()
   "Open the current issue in a web browser."
   (interactive)
-  (if (boundp 'github-current-issue)
+  (if github-current-issue
       (browse-url (plist-get github-current-issue :html_url))
     (message "No current issue selected")))
 
 (defun github-issue-browse-author ()
   "Open the current issue's author profile in a web browser."
   (interactive)
-  (if (boundp 'github-current-issue)
+  (if github-current-issue
       (browse-url (format "https://github.com/%s"
                           (plist-get (plist-get github-current-issue :user) :login)))
     (message "No current issue selected")))
@@ -233,8 +246,6 @@
                                ("Title" 60 github-issue-sort-by-title)])
   (setq tabulated-list-padding 2)
   (setq tabulated-list-sort-key (cons "Issue" nil))
-  (make-local-variable 'github-current-user)
-  (make-local-variable 'github-current-repo)
   (tabulated-list-init-header))
 
 (defvar github-issue-mode-map
@@ -248,10 +259,7 @@
 (define-derived-mode github-issue-mode special-mode "GitHub Issue"
   "Major mode for display a GitHub issue data.
 
-\\{github-issue-mode-map}"
-  (make-local-variable 'github-current-user)
-  (make-local-variable 'github-current-repo)
-  (make-local-variable 'github-current-issue))
+\\{github-issue-mode-map}")
 
 (provide 'github-issues)
 
