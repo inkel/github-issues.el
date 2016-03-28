@@ -6,6 +6,7 @@
 ;; Created: April 19, 2012
 ;; Version: 0.0.1
 ;; Keywords: GitHub Issues
+;; Package-Requires: ((emacs "24"))
 ;; URL: http://inkel.github.com/github-issues.el/
 
 ;; This file is not part of GNU Emacs.
@@ -35,12 +36,17 @@
 
 ;; For more information, please refer to <http://unlicense.org/>
 
+;;; Commentary:
+
 ;;; Installation
 
-;; Make sure to place `github-issues.el` somewhere in the load-path and add the following lines to your `.emacs` file:
+;; Make sure to place `github-issues.el` somewhere in the load-path
+;; and add the following lines to your `.emacs` file:
 ;;
 ;;    (require 'github-issues)
 ;;
+
+;;; Code:
 
 (require 'tabulated-list)
 (require 'url)
@@ -251,3 +257,5 @@
   (toggle-read-only t))
 
 (provide 'github-issues)
+
+;;; github-issues.el ends here
