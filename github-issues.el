@@ -173,7 +173,7 @@
         (insert "\n"))
       (let ((beg (point)))
         (insert "\n" (pget :body))
-        (replace-string "" "" nil beg (point)))
+        (replace-string "\r" "" nil beg (point)))
       (github-issue-mode)
       (github-switch-to-buffer buffer))))
 
